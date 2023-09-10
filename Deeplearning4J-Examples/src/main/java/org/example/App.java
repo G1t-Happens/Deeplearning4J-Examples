@@ -27,6 +27,9 @@ public class App {
             DataSetIterator iterator = new RecordReaderDataSetIterator(recordReader, 150, FEATURES_COUNT, CLASSES_COUNT);
             allDataSetData = iterator.next();
         }
+        //shuffle the dataset to get rid of ordering of classes
+        //constant seed of 45 because we always want the same shuffling results
+        allDataSetData.shuffle(45);
     }
 
 }

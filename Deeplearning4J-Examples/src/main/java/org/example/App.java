@@ -4,12 +4,21 @@ import org.datavec.api.records.reader.RecordReader;
 import org.datavec.api.records.reader.impl.csv.CSVRecordReader;
 import org.datavec.api.split.FileSplit;
 import org.deeplearning4j.datasets.datavec.RecordReaderDataSetIterator;
+import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
+import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
+import org.deeplearning4j.nn.conf.inputs.InputType;
+import org.deeplearning4j.nn.conf.layers.DenseLayer;
+import org.deeplearning4j.nn.conf.layers.OutputLayer;
+import org.deeplearning4j.nn.weights.WeightInit;
+import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.SplitTestAndTrain;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.dataset.api.preprocessor.DataNormalization;
 import org.nd4j.linalg.dataset.api.preprocessor.NormalizerStandardize;
 import org.nd4j.linalg.io.ClassPathResource;
+import org.nd4j.linalg.learning.config.Adam;
+import org.nd4j.linalg.lossfunctions.LossFunctions;
 
 import java.io.IOException;
 
@@ -43,6 +52,64 @@ public class App {
         SplitTestAndTrain testAndTrainSet = allDataSetData.splitTestAndTrain(0.70);
         DataSet trainingDataSet = testAndTrainSet.getTrain(); //Getting the trainingDataSet(150*0.7=105)
         DataSet testingDataSet = testAndTrainSet.getTest(); //Getting the testingDataSet(150*0.3=45)
+
+        //Network Configuration(Configuration Builder)
+        MultiLayerConfiguration configuration
+                = new NeuralNetConfiguration.Builder()
+                //optimization iterations
+                .iterations(9999)
+                //determine the output of a neuron given its input(hyperbolic tangent)
+                .activation(Activation.TANH)
+                //initial weights -> helps with better convergence during training
+                .weightInit(WeightInit.XAVIER)
+                //learning rate controls the step size during gradient descent
+                .learningRate(0.1)
+                //L2 regularization helps prevent overfitting by adding a penalty term
+                .regularization(true).l2(0.0001)
+                //initializes a list to define the layers of the neural network
+                .list()
+                //adds the first hidden layer to the network. It's a dense (fully connected) layer with FEATURES_COUNT input neurons and 3 output neurons.
+                .layer(0, new DenseLayer.Builder().nIn(FEATURES_COUNT).nOut(3).build())
+                //adds a second hidden layer with 3 input neurons and 3 output neurons.
+                .layer(1, new DenseLayer.Builder().nIn(3).nOut(3).build())
+                //This adds the output layer, which is configured for multi-class classification using negative log likelihood
+                //as the loss function and softmax activation. It has 3 input neurons and CLASSES_COUNT output neurons,
+                //which correspond to the classes in the dataset.
+                .layer(2, new OutputLayer.Builder(
+                        LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+                        .activation(Activation.SOFTMAX)
+                        .nIn(3).nOut(CLASSES_COUNT).build())
+                .backprop(true).pretrain(false) //backpropagation should be used for training the network
+                .build();
+
+        MultiLayerConfiguration configurationTwo = new NeuralNetConfiguration.Builder()
+                .iterations(9999)
+                .activation(Activation.RELU)
+                .weightInit(WeightInit.XAVIER)
+                .learningRate(0.01)
+                .updater(new Adam())
+                .regularization(true).l2(0.0001)
+                .list()
+                .layer(0, new DenseLayer.Builder()
+                        .nIn(FEATURES_COUNT)
+                        .nOut(64)
+                        .activation(Activation.RELU)
+                        .build())
+                .layer(1, new DenseLayer.Builder()
+                        .nIn(64)
+                        .nOut(32)
+                        .activation(Activation.RELU)
+                        .build())
+                .layer(2, new OutputLayer.Builder(
+                        LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+                        .activation(Activation.SOFTMAX)
+                        .nIn(32)
+                        .nOut(CLASSES_COUNT)
+                        .build())
+                .setInputType(InputType.convolutionalFlat(FEATURES_COUNT, 1, 1))
+                .backprop(true).pretrain(false)
+                .build();
+
 
         System.out.println("We haven't even started :D");
     }

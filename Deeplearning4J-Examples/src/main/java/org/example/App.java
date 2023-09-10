@@ -5,6 +5,7 @@ import org.datavec.api.records.reader.impl.csv.CSVRecordReader;
 import org.datavec.api.split.FileSplit;
 import org.deeplearning4j.datasets.datavec.RecordReaderDataSetIterator;
 import org.nd4j.linalg.dataset.DataSet;
+import org.nd4j.linalg.dataset.SplitTestAndTrain;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.dataset.api.preprocessor.DataNormalization;
 import org.nd4j.linalg.dataset.api.preprocessor.NormalizerStandardize;
@@ -35,8 +36,15 @@ public class App {
 
         //Normalizing(normal distribution) our data -> https://www.baeldung.com/cs/normalize-table-features
         DataNormalization normalize = new NormalizerStandardize();
-        normalize.fit(allDataSetData); //gathering tatistics about the data like average and standard deviation
+        normalize.fit(allDataSetData); //gathering tatistics about the data like mean and standard deviation
         normalize.transform(allDataSetData); //data is adjusted so that it has a mean of 0 and a standard deviation of 1
+
+        //Splitting data set into training and test data
+        SplitTestAndTrain testAndTrainSet = allDataSetData.splitTestAndTrain(0.70);
+        DataSet trainingDataSet = testAndTrainSet.getTrain(); //Getting the trainingDataSet(150*0.7=105)
+        DataSet testingDataSet = testAndTrainSet.getTest(); //Getting the testingDataSet(150*0.3=45)
+
+        System.out.println("We haven't even started :D");
     }
 
 }

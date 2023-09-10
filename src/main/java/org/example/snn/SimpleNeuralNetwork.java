@@ -1,4 +1,4 @@
-package org.example;
+package org.example.snn;
 
 import org.datavec.api.records.reader.RecordReader;
 import org.datavec.api.records.reader.impl.csv.CSVRecordReader;
@@ -26,7 +26,7 @@ import org.nd4j.linalg.lossfunctions.LossFunctions;
 import java.io.IOException;
 
 
-public class App {
+public class SimpleNeuralNetwork {
 
 
     private static final int CLASSES_COUNT = 3;
@@ -140,7 +140,7 @@ public class App {
             //computes various metrics such as accuracy, precision, recall, and F1-score.
             eval.eval(testingDataSet.getLabels(), output);
 
-            //Yeahh results :DD
+            //Yeahh results :D
             System.out.print("\nConfiguration " + configIndex + " Results:");
             System.out.println(eval.stats());
             System.out.println();

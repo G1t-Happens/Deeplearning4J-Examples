@@ -4,7 +4,7 @@
 *.settings
 /target/
 local.properties
-target/
+Deeplearning4J-Examples/target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/

@@ -17,7 +17,6 @@
     <maven.compiler.target>1.7</maven.compiler.target>
     <dl4j.version>0.9.1</dl4j.version> <!-- Latest non beta version -->
     <httpclient.version>4.3.5</httpclient.version>
-    <lombok.version>1.18.20</lombok.version>
     <org.slf4j.version>1.7.5</org.slf4j.version>
   </properties>
 
@@ -66,12 +65,6 @@
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
       <version>${httpclient.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-      <version>${lombok.version}</version>
-      <scope>provided</scope>
     </dependency>
   </dependencies>
 

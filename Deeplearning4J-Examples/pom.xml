@@ -18,6 +18,7 @@
     <dl4j.version>0.9.1</dl4j.version> <!-- Latest non beta version -->
     <httpclient.version>4.3.5</httpclient.version>
     <lombok.version>1.18.20</lombok.version>
+    <org.slf4j.version>1.7.5</org.slf4j.version>
   </properties>
 
   <dependencies>

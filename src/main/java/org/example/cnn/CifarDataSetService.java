@@ -10,27 +10,34 @@ import java.util.List;
 
 public class CifarDataSetService implements DataSetService {
 
-
+    // Define some constants and instance variables
+    // Define the input type for convolutional neural networks with dimensions 32x32x3
     private final InputType inputType = InputType.convolutional(32, 32, 3);
 
+    // Define the number of training images
     private final int trainImagesNum = 512;
 
+    // Define the number of test images
     private final int testImagesNum = 128;
 
+    // Define the batch size for training
     private final int trainBatch = 16;
 
+    // Define the batch size for testing
     private final int testBatch = 8;
 
+    // Create instances of CifarDataSetIterator for training and testing
     private final CifarDataSetIterator trainIterator;
-
     private final CifarDataSetIterator testIterator;
 
 
+    // Constructor initializes the iterators
     CifarDataSetService() {
         trainIterator = new CifarDataSetIterator(trainBatch, trainImagesNum, true);
         testIterator = new CifarDataSetIterator(testBatch, testImagesNum, false);
     }
 
+    // Getter methods for accessing class properties
     public InputType getInputType() {
         return inputType;
     }
@@ -59,6 +66,7 @@ public class CifarDataSetService implements DataSetService {
         return testIterator;
     }
 
+    // Implementing methods from the DataSetService interface
     @Override
     public DataSetIterator trainIterator() {
         return trainIterator;

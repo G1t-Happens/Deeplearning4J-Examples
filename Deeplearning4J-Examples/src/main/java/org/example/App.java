@@ -4,13 +4,16 @@ import org.datavec.api.records.reader.RecordReader;
 import org.datavec.api.records.reader.impl.csv.CSVRecordReader;
 import org.datavec.api.split.FileSplit;
 import org.deeplearning4j.datasets.datavec.RecordReaderDataSetIterator;
+import org.deeplearning4j.eval.Evaluation;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.inputs.InputType;
 import org.deeplearning4j.nn.conf.layers.DenseLayer;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
+import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.nd4j.linalg.activations.Activation;
+import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.SplitTestAndTrain;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
@@ -24,6 +27,7 @@ import java.io.IOException;
 
 
 public class App {
+
 
     private static final int CLASSES_COUNT = 3;
     private static final int FEATURES_COUNT = 4;
@@ -54,10 +58,9 @@ public class App {
         DataSet testingDataSet = testAndTrainSet.getTest(); //Getting the testingDataSet(150*0.3=45)
 
         //Network Configuration(Configuration Builder)
-        MultiLayerConfiguration configuration
-                = new NeuralNetConfiguration.Builder()
+        MultiLayerConfiguration configurationOne = new NeuralNetConfiguration.Builder()
                 //optimization iterations
-                .iterations(9999)
+                .iterations(2000)
                 //determine the output of a neuron given its input(hyperbolic tangent)
                 .activation(Activation.TANH)
                 //initial weights -> helps with better convergence during training
@@ -83,7 +86,7 @@ public class App {
                 .build();
 
         MultiLayerConfiguration configurationTwo = new NeuralNetConfiguration.Builder()
-                .iterations(9999)
+                .iterations(2000)
                 .activation(Activation.RELU)
                 .weightInit(WeightInit.XAVIER)
                 .learningRate(0.01)
@@ -110,8 +113,39 @@ public class App {
                 .backprop(true).pretrain(false)
                 .build();
 
+        // Define an array or list of configurations
+        MultiLayerConfiguration[] configurations = new MultiLayerConfiguration[]{
+                configurationOne,
+                configurationTwo,
+                // Add more configurations as needed
+        };
 
-        System.out.println("We haven't even started :D");
+        int configIndex = 1;
+        for (MultiLayerConfiguration configuration : configurations) {
+
+            //Creating and Training a Network
+            MultiLayerNetwork model = new MultiLayerNetwork(configuration);
+            //initialize mode
+            model.init();
+            //trains the neural network using the provided training dataset
+            model.fit(trainingDataSet);
+
+            //trained model is used to make predictions on a separate testing dataset
+            INDArray output = model.output(testingDataSet.getFeatures());
+
+            //evaluate the performance of the model, specified by the number of classes
+            Evaluation eval = new Evaluation(CLASSES_COUNT);
+            //evaluates the model's predictions by comparing them to the actual labels of the testing dataset.
+            //computes various metrics such as accuracy, precision, recall, and F1-score.
+            eval.eval(testingDataSet.getLabels(), output);
+
+            //Yeahh results :DD
+            System.out.print("\nConfiguration " + configIndex + " Results:");
+            System.out.println(eval.stats());
+            System.out.println();
+            System.out.println();
+            configIndex++;
+        }
     }
 
 }

@@ -15,7 +15,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <dl4j.version>1.0.0-M2.1</dl4j.version>
+        <dl4j.version>1.0.0-M2</dl4j.version>
         <httpclient.version>4.5.14</httpclient.version>
         <org.slf4j.version>1.7.5</org.slf4j.version>
         <org.projectlombok.version>1.18.26</org.projectlombok.version>

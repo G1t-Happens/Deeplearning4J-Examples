@@ -30,6 +30,7 @@ import java.io.IOException;
 
 public class SimpleNeuralNetwork {
 
+    protected static final Logger log = LoggerFactory.getLogger(SimpleNeuralNetwork.class);
 
     private static final int CLASSES_COUNT = 3;
     private static final int FEATURES_COUNT = 4;
@@ -37,10 +38,7 @@ public class SimpleNeuralNetwork {
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
-        final Logger log = LoggerFactory.getLogger(SimpleNeuralNetwork.class);
-
         DataSet allDataSetData;
-
 
         //Reading file(irisdataset.txt) with 0 skips and delimiter(,)
         try (RecordReader recordReader = new CSVRecordReader(0, ',')) {
@@ -74,7 +72,7 @@ public class SimpleNeuralNetwork {
         log.info("Build MultiLayerConfiguration");
         MultiLayerConfiguration configuration = new NeuralNetConfiguration.Builder()
                 //random seed for reproducibility in neural network training
-                .seed(123)
+                .seed(123L)
                 //activation function for neurons(hyperbolic tangent)
                 .activation(Activation.TANH)
                 //initial weights -> helps with better convergence during training

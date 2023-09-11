@@ -86,4 +86,5 @@ public class CifarDataSetService implements DataSetService {
     public List<String> labels() {
         return trainIterator.getLabels();
     }
+
 }

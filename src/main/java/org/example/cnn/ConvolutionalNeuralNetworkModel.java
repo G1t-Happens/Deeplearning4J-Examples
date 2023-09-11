@@ -1,5 +1,6 @@
 package org.example.cnn;
 
+import org.deeplearning4j.eval.Evaluation;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
@@ -13,8 +14,10 @@ import org.example.cnn.interfaces.DataSetService;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 
-public class ConvolutionalNeuralNetworkModel {
+import java.util.stream.IntStream;
 
+
+public class ConvolutionalNeuralNetworkModel {
 
     private final DataSetService dataSetService;
 
@@ -26,9 +29,9 @@ public class ConvolutionalNeuralNetworkModel {
         this.dataSetService = dataSetService;
 
         MultiLayerConfiguration configuration = new NeuralNetConfiguration.Builder()
-                .seed(1500)
+                .seed(123)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-                .learningRate(0.001)
+                .learningRate(0.01)
                 .regularization(true)
                 .updater(Updater.ADAM)
                 .list()
@@ -99,5 +102,17 @@ public class ConvolutionalNeuralNetworkModel {
                 .build();
     }
 
-    //TODO: MultiLayerConfiguration, train, evaluate, ConvolutionLayer, SubsamplingLayer, OutputLayer
+    void trainModel() {
+        multiLayerNetwork.init();
+        int epochsNum = 100;
+        IntStream.range(1, epochsNum + 1).forEach(epoch -> {
+            System.out.printf("Epoch %d  / %d \n", epoch, epochsNum);
+            multiLayerNetwork.fit(dataSetService.trainIterator());
+        });
+    }
+
+    Evaluation evaluateTrainedModel() {
+        return multiLayerNetwork.evaluate(dataSetService.testIterator());
+    }
+
 }

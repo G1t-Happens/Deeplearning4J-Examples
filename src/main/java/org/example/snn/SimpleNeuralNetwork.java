@@ -73,15 +73,15 @@ public class SimpleNeuralNetwork {
         //Network Configuration(Configuration Builder)
         log.info("Build MultiLayerConfiguration");
         MultiLayerConfiguration configuration = new NeuralNetConfiguration.Builder()
-                //optimization iterations
+                //random seed for reproducibility in neural network training
                 .seed(123)
-                //determine the output of a neuron given its input(hyperbolic tangent)
+                //activation function for neurons(hyperbolic tangent)
                 .activation(Activation.TANH)
                 //initial weights -> helps with better convergence during training
                 .weightInit(WeightInit.XAVIER)
-                //learning rate controls the step size during gradient descent
+                //adam optimizer with a learning rate of 0.1 for gradient descent
                 .updater(new Adam(0.1))
-                //L2 regularization helps prevent overfitting by adding a penalty term
+                //L2 regularization helps prevent overfitting by adding a penalty term of 0.0001
                 .l2(0.0001)
                 //initializes a list to define the layers of the neural network
                 .list()
